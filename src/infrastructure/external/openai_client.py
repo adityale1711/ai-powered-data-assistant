@@ -44,7 +44,7 @@ class OpenAIClient(ILLMProvider):
 
         try:
             # Load the prompt template from the configured file path
-            with open('prompts/builder_prompt.txt', 'r') as file:
+            with open('prompts/infrastructure/external/builder_prompt.txt', 'r') as file:
                 prompt_template = file.read()
 
             # Format the template with the specific arguments
@@ -68,7 +68,7 @@ class OpenAIClient(ILLMProvider):
         """
         try:
             # Load the prompt template from the configured file path
-            with open('prompts/system_prompt.txt', 'r') as file:
+            with open('prompts/infrastructure/external/system_prompt.txt', 'r') as file:
                 prompt = file.read()
             return prompt
         except FileNotFoundError:
