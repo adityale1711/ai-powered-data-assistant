@@ -74,9 +74,9 @@ class UIComponents:
             visualization: The visualization entity to display.
         """
         st.subheader(f"📈 Visualization")
-        
-        if hasattr(visualization.chart_data, "show"):
-            st.plotly_chart(visualization.chart_data, use_container_width=True)
+
+        if hasattr(visualization.chart_object, "show"):
+            st.plotly_chart(visualization.chart_object, use_container_width=True)
         else:
             st.write("Chart data format not supported for display.")
 
@@ -176,8 +176,8 @@ class UIComponents:
         with col2:
             UIComponents._render_data_summary(analysis_result.data_summary)
         with col3:
-            if analysis_result.visualizations:
-                UIComponents._render_visualization(analysis_result.visualizations)
+            if analysis_result.visualization:
+                UIComponents._render_visualization(analysis_result.visualization)
 
         # Render execution info at the bottom
         UIComponents._render_execution_info(analysis_result)

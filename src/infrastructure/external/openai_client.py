@@ -40,7 +40,8 @@ class OpenAIClient(ILLMProvider):
         """
 
         sample_data_str = json.dumps(dataset_info.sample_data[:5], indent=2)
-        column_type_str = json.dumps(dataset_info.column_types, indent=2)
+        column_types_str = json.dumps(dataset_info.column_types, indent=2)
+        available_columns = ", ".join(dataset_info.columns)
 
         try:
             # Load the prompt template from the configured file path
@@ -51,8 +52,9 @@ class OpenAIClient(ILLMProvider):
             prompt = prompt_template.format(
                 question=question, 
                 dataset_info=dataset_info,
+                available_columns=available_columns,
                 sample_data_str=sample_data_str,
-                column_type_str=column_type_str
+                column_types_str=column_types_str
             )
 
             return prompt
@@ -151,13 +153,13 @@ class OpenAIClient(ILLMProvider):
 
             if json_match:
                 json_str = json_match.group(0)
-                respnse_data = json.loads(json_str)
+                response_data = json.loads(json_str)
 
-                answer_text = respnse_data.get("answer", "No answer provided")
-                confidence = float(respnse_data.get("condidence", 0.5))
-                explanation = respnse_data.get("explanation", "")
-                code = respnse_data.get("code", "# No code generated")
-                code_description = respnse_data.get("code_description", "")
+                answer_text = response_data.get("answer", "No answer provided")
+                confidence = float(response_data.get("confidence", 0.5))
+                explanation = response_data.get("explanation", "")
+                code = response_data.get("code", "# No code generated")
+                code_description = response_data.get("code_description", "")
 
                 answer = Answer(
                     text=answer_text,
@@ -165,12 +167,12 @@ class OpenAIClient(ILLMProvider):
                     explanation=explanation
                 )
 
-                analyisis_code = AnalyzeCode(
+                analysis_code = AnalyzeCode(
                     code=code,
                     description=code_description
                 )
 
-                return answer, analyisis_code
+                return answer, analysis_code
             else:
                 # Fallback: try to extract code and answer separately
                 answer_text = self._extract_text_answer(response_text)
@@ -182,12 +184,12 @@ class OpenAIClient(ILLMProvider):
                     explanation="Parsed from non-JSON response"
                 )
 
-                analyisis_code = AnalyzeCode(
+                analysis_code = AnalyzeCode(
                     code=code,
                     description="Extracted from response"
                 )
 
-                return answer, analyisis_code
+                return answer, analysis_code
         except Exception as e:
             raise LLMProviderError(f"Failed to generate answer: {str(e)}") from e
 
@@ -236,4 +238,50 @@ class OpenAIClient(ILLMProvider):
             return answer, analyze_code
 
         except Exception as e:
-            raise LLMProviderError(f"Failed to generate answer: {str(e)}") from e
+            raise LLMProviderError(f": {str(e)}") from e
+
+    async def generate_answer_with_prompt(
+        self,
+        question: Question,
+        dataset_info: DatasetInfo,
+        prompt: str
+    ) -> tuple[Answer, AnalyzeCode]:
+        """Generate an answer and analysis code using a pre-built prompt.
+
+        Args:
+            question: The user's question about the dataset.
+            dataset_info: Information about the dataset structure.
+            prompt: The complete prompt to send to the LLM.
+
+        Returns:
+            A tuple containing the answer and generated analysis code.
+
+        Raises:
+            LLMProviderError: If the OpenAI API call fails.
+        """
+        try:
+            # Call the OpenAI API with the provided prompt
+            response = await self.client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": self._get_system_prompt()
+                    },
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ],
+                temperature=0.1,
+                max_tokens=2000
+            )
+            response_text = response.choices[0].message.content
+
+            # Parse the response to extract answer and code
+            answer, analyze_code = self._parse_response(response_text)
+
+            return answer, analyze_code
+
+        except Exception as e:
+            raise LLMProviderError(f": {str(e)}") from e

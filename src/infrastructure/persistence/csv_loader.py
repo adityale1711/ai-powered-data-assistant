@@ -16,8 +16,8 @@ class CSVLoader(IDataRepository):
 
     def __init__(self):
         """Initialize the CSV loader."""
-        self._dataset = Optional[pd.DataFrame] = None
-        self._dataset_info = Optional[DatasetInfo] = None
+        self._dataset: Optional[pd.DataFrame] = None
+        self._dataset_info: Optional[DatasetInfo] = None
 
     def load_dataset(self, file_path: str) -> DatasetInfo:
         """Load a CSV dataset and return its information.

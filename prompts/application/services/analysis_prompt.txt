@@ -1,5 +1,3 @@
-{self.system_prompt}
-
 **User Question:**
 {question.text}
 Language: {question.language}
@@ -7,7 +5,7 @@ Language: {question.language}
 **Dataset Context:**
 - File: {dataset_info.filename}
 - Shape: {dataset_info.shape[0]} rows, {dataset_info.shape[1]} columns
-- Available Columns: {', '.join(dataset_info.columns)}
+- Available Columns: {available_columns}
 
 **Column Data Types:**
 {column_types_str}

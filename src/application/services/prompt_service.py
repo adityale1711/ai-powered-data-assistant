@@ -47,7 +47,8 @@ class PromptService(IPromptService):
 
         # Format sample data for better readability
         sample_data_str = json.dumps(dataset_info.sample_data[:5], indent=2)
-        column_type_str = json.dumps(dataset_info.column_types, indent=2)
+        column_types_str = json.dumps(dataset_info.column_types, indent=2)
+        available_columns = ", ".join(dataset_info.columns)
 
         try:
             # Load the prompt template from the configured file path
@@ -56,10 +57,11 @@ class PromptService(IPromptService):
 
             # Format the template with the specific arguments
             prompt = prompt_template.format(
-                question=question, 
+                question=question,
                 dataset_info=dataset_info,
+                available_columns=available_columns,
                 sample_data_str=sample_data_str,
-                column_type_str=column_type_str
+                column_types_str=column_types_str
             )
 
             return prompt

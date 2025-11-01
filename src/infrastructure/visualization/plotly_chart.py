@@ -50,10 +50,22 @@ class PlotlyChartGenerator(IChartGenerator):
                     df = pd.DataFrame(list(data.items()), columns=['Category', 'Value'])
                     x_col, y_col = 'Category', 'Value'
                 else:
-                    # Multiple metrics
-                    df = pd.DataFrame(data)
-                    x_col = df.columns[0]
-                    y_col = df.columns[1] if len(df.columns) > 1 else df.columns[0]
+                    # Multiple metrics or complex dict structure
+                    try:
+                        df = pd.DataFrame(data)
+                        x_col = df.columns[0]
+                        y_col = df.columns[1] if len(df.columns) > 1 else df.columns[0]
+                    except Exception:
+                        # Fallback: try to flatten nested dict
+                        flattened = {}
+                        for k, v in data.items():
+                            if isinstance(v, dict):
+                                for sub_k, sub_v in v.items():
+                                    flattened[f"{k}_{sub_k}"] = sub_v
+                            else:
+                                flattened[k] = v
+                        df = pd.DataFrame(list(flattened.items()), columns=['Category', 'Value'])
+                        x_col, y_col = 'Category', 'Value'
             elif isinstance(data, (list, tuple)):
                 # Convert list to DataFrame
                 df = pd.DataFrame(data)
@@ -104,12 +116,19 @@ class PlotlyChartGenerator(IChartGenerator):
             )
 
             return fig
-        except Exception:
-            # Create fallback chart
+        except Exception as e:
+            # Create fallback chart with error details
+            import traceback
+            error_msg = str(e)
+            print(f"Chart generation error details: {error_msg}")
+            print(f"Data type: {type(data)}")
+            print(f"Data content: {data}")
+            print(f"Traceback: {traceback.format_exc()}")
+
             fig = go.Figure(
                 data=[go.Bar(x=["Error"], y=[0])],
                 layout=go.Layout(
-                    title=f"Chart generation Error: {title}",
+                    title=f"Chart generation Error: {title} - {error_msg}",
                     template="plotly_white"
                 )
             )
@@ -183,12 +202,18 @@ class PlotlyChartGenerator(IChartGenerator):
             )
 
             return fig
-        except Exception:
-            # Create fallback chart
+        except Exception as e:
+            # Create fallback chart with error details
+            import traceback
+            error_msg = str(e)
+            print(f"Line chart generation error details: {error_msg}")
+            print(f"Data type: {type(data)}")
+            print(f"Data content: {data}")
+
             fig = go.Figure(
                 data=[go.Scatter(x=[1, 2, 3], y=[1, 2, 3], mode='lines')],
                 layout=go.Layout(
-                    title=f"Chart generation Error: {title}",
+                    title=f"Line chart Error: {title} - {error_msg}",
                     template="plotly_white"
                 )
             )
@@ -249,12 +274,18 @@ class PlotlyChartGenerator(IChartGenerator):
             )
 
             return fig
-        except Exception:
-            # Create fallback chart
+        except Exception as e:
+            # Create fallback chart with error details
+            import traceback
+            error_msg = str(e)
+            print(f"Pie chart generation error details: {error_msg}")
+            print(f"Data type: {type(data)}")
+            print(f"Data content: {data}")
+
             fig = go.Figure(
                 data=[go.Pie(labels=["Error"], values=[1])],
                 layout=go.Layout(
-                    title=f"Chart generation Error: {title}",
+                    title=f"Pie chart Error: {title} - {error_msg}",
                     template="plotly_white"
                 )
             )
@@ -331,12 +362,18 @@ class PlotlyChartGenerator(IChartGenerator):
             )
 
             return fig
-        except Exception:
-            # Create fallback chart
+        except Exception as e:
+            # Create fallback chart with error details
+            import traceback
+            error_msg = str(e)
+            print(f"Scatter chart generation error details: {error_msg}")
+            print(f"Data type: {type(data)}")
+            print(f"Data content: {data}")
+
             fig = go.Figure(
                 data=[go.Scatter(x=[1, 2, 3], y=[1, 2, 3], mode='markers')],
                 layout=go.Layout(
-                    title=f"Chart generation Error: {title}",
+                    title=f"Scatter chart Error: {title} - {error_msg}",
                     template="plotly_white"
                 )
             )

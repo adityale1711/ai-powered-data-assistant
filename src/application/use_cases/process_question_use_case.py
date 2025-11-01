@@ -91,9 +91,12 @@ class ProcessQuestionUseCase:
             dataset_info = self.data_repository.load_dataset("data/superstore_data.csv")
             dataset = self.data_repository.get_dataset()
 
-            # Generate answer and analysis code using LLM
-            answer, analysis_code = await self.llm_provider.generate_answer(
-                question, dataset_info
+            # Build the comprehensive prompt using the prompt service
+            prompt = self.prompt_service.build_analysis_prompt(question, dataset_info)
+
+            # Generate answer and analysis code using LLM with the prepared prompt
+            answer, analysis_code = await self.llm_provider.generate_answer_with_prompt(
+                question, dataset_info, prompt
             )
 
             # Execute the generated code
@@ -120,7 +123,7 @@ class ProcessQuestionUseCase:
                 question=question,
                 answer=answer,
                 data_summary=data_summary,
-                visualizations=visualizations,
+                visualization=visualizations,
                 execution_time=execution_time
             )
         except Exception as e:
@@ -144,6 +147,6 @@ class ProcessQuestionUseCase:
                 question=question,
                 answer=error_answer,
                 data_summary=error_summary,
-                visualizations=None,
+                visualization=None,
                 execution_time=execution_time
             )

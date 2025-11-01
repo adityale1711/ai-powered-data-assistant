@@ -50,7 +50,7 @@ class Answer:
 
 
 @dataclass(frozen=True)
-class AnalysisCode:
+class AnalyzeCode:
     """Represents Python code generated for data analysis.
 
     Attributes:
@@ -85,14 +85,14 @@ class Visualization:
 
     Attributes:
         chart_type: The type of chart (bar, line, pie, etc.).
-        chart_data: The data used for the visualization.
+        chart_object: The plotly chart object.
         title: The title of the chart.
         description: Description of what the visualization shows.
         config: Additional configuration for the chart.
     """
 
     chart_type: VisualizationType
-    chart_data: Any
+    chart_object: Any
     title: str
     description: str
     config: Optional[dict[str, Any]] = None

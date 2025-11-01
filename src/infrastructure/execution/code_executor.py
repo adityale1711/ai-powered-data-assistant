@@ -3,7 +3,7 @@ import traceback
 import pandas as pd
 from io import StringIO
 from typing import Any
-from ...domain.entities import AnalysisCode, DataSummary
+from ...domain.entities import AnalyzeCode, DataSummary
 from ...domain.repositories import ICodeExecutor
 
 
@@ -26,7 +26,7 @@ class SandboxedCodeExecutor(ICodeExecutor):
 
     def execute_code(
         self,
-        code: AnalysisCode,
+        code: AnalyzeCode,
         dataset: Any
     ) -> DataSummary:
         """Execute analysis code on the dataset in a sandboxed environment.
@@ -62,7 +62,8 @@ class SandboxedCodeExecutor(ICodeExecutor):
                 "list": list,
                 "dict": dict,
                 "tuple": tuple,
-                "set": set
+                "set": set,
+                "__import__": __import__  # Allow imports in sandboxed code
             },
             **self.allowed_modules, # Add allowed modules
             "df": dataset.copy()    # Add the dataset as 'df'

@@ -38,6 +38,28 @@ class ILLMProvider(ABC):
         """
         pass
 
+    @abstractmethod
+    async def generate_answer_with_prompt(
+        self,
+        question: Question,
+        dataset_info: DatasetInfo,
+        prompt: str
+    ) -> tuple[Answer, AnalyzeCode]:
+        """Generate an answer and analysis code using a pre-built prompt.
+
+        Args:
+            question: The user's question about the dataset.
+            dataset_info: Information about the dataset structure.
+            prompt: The complete prompt to send to the LLM.
+
+        Returns:
+            A tuple containing the answer and generated analysis code.
+
+        Raises:
+            LLMProviderError: If the LLM provider fails to generate an answer.
+        """
+        pass
+
 
 class IDataRepository(ABC):
     """Interface for data access operations.
@@ -106,7 +128,7 @@ class ICodeExecutor(ABC):
 
 
 class IChartGenerator(ABC):
-    """Interface for generating data visualizations.
+    """Interface for generating data .
 
     This interface defines the contract for creating charts and graphs
     based on analysis results.
