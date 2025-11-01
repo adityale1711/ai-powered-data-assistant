@@ -1,17 +1,3 @@
-Build a comprehensive prompt for the LLM.
-
-        Args:
-            question: The user's question.
-            dataset_info: Information about the dataset.
-
-        Returns:
-            A formatted prompt string for the LLM.
-        """
-        # Format sample data for better readability
-        sample_data_str = json.dumps(dataset_info.sample_data[:5], indent=2)
-        column_types_str = json.dumps(dataset_info.column_types, indent=2)
-
-        prompt = f"""
 {self.system_prompt}
 
 **User Question:**
