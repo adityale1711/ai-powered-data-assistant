@@ -50,7 +50,7 @@ class Answer:
 
 
 @dataclass(frozen=True)
-class AnalyzeCode:
+class AnalysisCode:
     """Represents Python code generated for data analysis.
 
     Attributes:
