@@ -89,7 +89,7 @@ class ProcessQuestionUseCase:
 
         try:
             # Get dataset information
-            dataset_info = self.data_repository.load_dataset(config.data_file_path)
+            dataset_info = self.data_repository.load_dataset(config.data_source)
             dataset = self.data_repository.get_dataset()
 
             # Build the comprehensive prompt using the prompt service
