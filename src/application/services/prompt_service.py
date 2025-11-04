@@ -1,5 +1,7 @@
 import json
+
 from ... import logger
+from ...config import config
 from ...domain.entities import DatasetInfo, Question
 from ...domain.repositories import IPromptService
 
@@ -23,7 +25,7 @@ class PromptService(IPromptService):
         """
         try:
             # Load the system prompt template from the configured file path
-            with open('prompts/application/services/system_prompt.txt', 'r') as file:
+            with open(config.app_system_prompt_path, 'r') as file:
                 prompt = file.read()
             return prompt
         except FileNotFoundError:
@@ -52,7 +54,7 @@ class PromptService(IPromptService):
 
         try:
             # Load the prompt template from the configured file path
-            with open('prompts/application/services/analysis_prompt.txt', 'r') as file:
+            with open(config.analysis_prompt_path, 'r') as file:
                 prompt_template = file.read()
 
             # Format the template with the specific arguments

@@ -2,6 +2,7 @@ import re
 import json
 
 from ... import logger
+from ...config import config
 from openai import AsyncOpenAI
 from ...domain.entities import AnalyzeCode, Answer, DatasetInfo, Question
 from ...domain.repositories import ILLMProvider, LLMProviderError
@@ -45,7 +46,7 @@ class OpenAIClient(ILLMProvider):
 
         try:
             # Load the prompt template from the configured file path
-            with open('prompts/infrastructure/external/builder_prompt.txt', 'r') as file:
+            with open(config.builder_prompt_path, 'r') as file:
                 prompt_template = file.read()
 
             # Format the template with the specific arguments
@@ -70,7 +71,7 @@ class OpenAIClient(ILLMProvider):
         """
         try:
             # Load the prompt template from the configured file path
-            with open('prompts/infrastructure/external/system_prompt.txt', 'r') as file:
+            with open(config.system_prompt_path, 'r') as file:
                 prompt = file.read()
             return prompt
         except FileNotFoundError:

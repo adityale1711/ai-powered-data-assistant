@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from typing import Any, Optional
 from ...domain.entities import DatasetInfo
@@ -37,7 +38,7 @@ class CSVLoader(IDataRepository):
 
             # Create dataset info
             self._dataset_info = DatasetInfo(
-                filename=file_path.split("/")[-1],
+                filename=file_path.split(os.sep)[-1],
                 columns=list(self._dataset.columns),
                 shape=self._dataset.shape,
                 sample_data=self._dataset.head().to_dict("records"),

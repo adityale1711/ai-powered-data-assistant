@@ -1,7 +1,7 @@
 import time
 from ...domain.entities import (
-    AnalysisResult, 
-    Question, 
+    AnalysisResult,
+    Question,
     VisualizationType,
     Answer,
     DataSummary
@@ -14,6 +14,7 @@ from ...domain.repositories import (
     ILLMProvider,
     IPromptService
 )
+from ...config import config
 
 
 class ProcessQuestionUseCase:
@@ -88,7 +89,7 @@ class ProcessQuestionUseCase:
 
         try:
             # Get dataset information
-            dataset_info = self.data_repository.load_dataset("data/superstore_data.csv")
+            dataset_info = self.data_repository.load_dataset(config.data_file_path)
             dataset = self.data_repository.get_dataset()
 
             # Build the comprehensive prompt using the prompt service
