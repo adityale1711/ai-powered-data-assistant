@@ -148,10 +148,17 @@ class UIComponents:
             for question in example_questions:
                 st.write(f"• {question}")
 
+        def on_text_input_change():
+            """Callback function when text input changes."""
+            # When Enter is pressed, set submit trigger
+            if st.session_state.question_input.strip():
+                st.session_state.submit_trigger = True
+
         question = st.text_input(
             label="Enter your question:",
             placeholder="E.g., Show the top 10 products by sales",
-            key="question_input"
+            key="question_input",
+            on_change=on_text_input_change
         )
 
         return question

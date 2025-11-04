@@ -59,11 +59,21 @@ class StreamlitApp:
         if "analysis_result" not in st.session_state:
             st.session_state.analysis_result = None
 
+        # Initialize submit trigger
+        if "submit_trigger" not in st.session_state:
+            st.session_state.submit_trigger = False
+
         # Render question input
         question = UIComponents.render_question_input()
 
-        # Submit question button
-        if st.button("Submit Question", type="primary", disabled=not question.strip()):
+        # Check if submit was triggered by Enter key or button click
+        submit_triggered = st.button("Submit Question", type="primary") or st.session_state.submit_trigger
+
+        # Reset submit trigger after checking
+        if st.session_state.submit_trigger:
+            st.session_state.submit_trigger = False
+
+        if submit_triggered:
             if question.strip():
                 # Clear previous result
                 st.session_state.analysis_result = None
